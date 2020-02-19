@@ -41,7 +41,7 @@ def score_based_recommender(movies_ranked):
 
     ax = sns.barplot(x=w_avg['weighted_average'].head(10), y=w_avg['original_title'].head(10), data=w_avg, palette='deep')
 
-    plt.xlim(6.75, 8.35)
+    plt.xlim(4.75, 9.35)
     plt.title('"Best" Movies by TMDB Votes', weight='bold')
     plt.xlabel('Weighted Average Score', weight='bold')
     plt.ylabel('Movie Title', weight='bold')
