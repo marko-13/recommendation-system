@@ -14,10 +14,12 @@ def run_data_preprocessing_pipeline():
 
     df = decompose_columns(df)
 
-
     cols = list(df.columns)
 
     first_form_index = cols.index('MJIL 1000 08 10')
+
+    df, first_form_index = remove_unbalanced_columns(df, first_form_index)
+
 
     # print(first_form_index)
 
@@ -26,6 +28,38 @@ def run_data_preprocessing_pipeline():
     df.to_csv('data/cleansed.csv', index=False)
 
     return df, first_form_index
+
+
+def remove_unbalanced_columns(df, first_form_index):
+    for column in df.columns:
+        pom = df.groupby(column)[column].nunique()
+        # print(df[column])
+        num_ones = 0
+        num_zeros = 0
+        for el in df[column]:
+            if el == 0:
+                num_zeros +=1
+            else:
+                num_ones += 1
+
+        if num_ones > num_zeros:
+            flag = num_zeros / num_ones
+        else:
+            flag = num_ones / num_zeros
+
+        cols1 = list(df.columns)
+
+        cur_ind = cols1.index(column)
+
+        print("Flag: " + str(flag))
+        if flag <= 0.005 and first_form_index > cur_ind:
+            print("Removing column based on unbalanced data: " + str(column))
+            with open('log/report.txt', 'a+') as f:
+                f.write(f"Column: {column} is dropped because of unbalanced data.\n")
+            df.drop(column, inplace=True, axis=1)
+            first_form_index -= 1
+
+    return  df, first_form_index
 
 
 def load_and_drop_data(filename):
@@ -43,6 +77,10 @@ def load_and_drop_data(filename):
         # print(nominal_values)
         if len(nominal_values) == 1:
             columns_to_drop.append(str(column))
+
+            with open('log/report.txt', 'a+') as f:
+                f.write(f"Column: {column} is dropped because it has only one distinct value.\n")
+
 
     df.drop(columns_to_drop, inplace=True, axis=1)
 
