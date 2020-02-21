@@ -4,7 +4,16 @@ import numpy as np
 
 
 def run_data_preprocessing_pipeline():
-    pass
+    file_name = 'data/BC - AI ORIGINAL.csv'
+
+    df = load_and_drop_data(file_name)
+
+    df = decompose_columns(df)
+
+
+    df.to_csv('data/cleansed.csv', index=False)
+
+    return df
 
 
 def load_and_drop_data(filename):
