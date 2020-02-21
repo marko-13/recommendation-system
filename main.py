@@ -4,8 +4,8 @@ import movie_recommendation as mr
 import recommendation_engine as re
 import insurance_recommendation as ir
 
-# Importujmo samo sve odmah... 
 from insurance_recommendation import *
+
 
 def main():
 

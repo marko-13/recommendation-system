@@ -10,10 +10,18 @@ def load_and_drop_data(filename):
     columns_to_drop = ['LineOfBusiness', 'ERMSDealNumber', 'InceptionDate', 'ExpiryDate', 'Paper', 'IsAdmitted',
                        'InsuredName', 'BrokerCompanyAddress', 'BrokerContact', 'DealComponentID']
 
+
+    # if all values are in row drop that row
+    for column in df.columns:
+        # print(df[column])
+        nominal_values = df.groupby(column)[column].nunique().index.tolist()
+        # print(nominal_values)
+        if len(nominal_values) == 1:
+            columns_to_drop.append(str(column))
+
     df.drop(columns_to_drop, inplace=True, axis=1)
 
     # print(df)
-
     return df
 
 
@@ -40,7 +48,6 @@ def decompose_column(df, column_name):
 
     column_map = {nominal_values[i]: i for i in range(len(nominal_values))}
 
-
     rows = []
 
     for nom_val in df[column_name]:
@@ -54,14 +61,11 @@ def decompose_column(df, column_name):
         except KeyError:
             pass
 
-
         rows.append(row)
-
 
     # Add original column name as prefix to new columns
     nominal_values = [column_name + "_" + nom_val for nom_val in nominal_values]
 
-    
     ret_df = pd.DataFrame(rows, columns=nominal_values)
 
     return ret_df
