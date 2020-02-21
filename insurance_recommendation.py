@@ -10,6 +10,12 @@ def run_data_preprocessing_pipeline():
 
     df = decompose_columns(df)
 
+    brojac = 0
+    for column in df.columns:
+        if column == 'MJIL 1000 08 10':
+            # print("\n\n\n" + str(brojac) + "\n\n\n")
+            break
+        brojac += 1
 
     df.to_csv('data/cleansed.csv', index=False)
 
