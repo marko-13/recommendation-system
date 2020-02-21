@@ -2,6 +2,7 @@
 import pandas as pd
 import numpy as np
 
+
 def load_and_drop_data(filename):
     df = pd.read_csv(filename, delimiter=',')
     # print(df)
@@ -29,6 +30,9 @@ def decompose_column(df, column_name):
     Returns:
         pandas.Dataframe: A dataframe of only the decomposed column.
     '''
+
+    if column_name not in df.columns:
+        raise ValueError(f'Column "{column_name}" does not exist in this dataframe.')
     
     nominal_values = df.groupby(column_name)[column_name].nunique().index.tolist()
 
@@ -40,7 +44,7 @@ def decompose_column(df, column_name):
     rows = []
 
     for nom_val in df[column_name]:
-        row = np.zeros(num_vals)
+        row = np.zeros(num_vals, dtype="int32")
 
         # NOTE: How to handle NULL values? Do we treat them as a new
         # column or just ignore them (as we are now)?
@@ -52,6 +56,10 @@ def decompose_column(df, column_name):
 
 
         rows.append(row)
+
+
+    # Add original column name as prefix to new columns
+    nominal_values = [column_name + "_" + nom_val for nom_val in nominal_values]
 
     
     ret_df = pd.DataFrame(rows, columns=nominal_values)
@@ -70,13 +78,13 @@ def replace_column_with_decomposed(df, column_name, df_decomposed):
 
     num_replacement_cols = len(df_decomposed.columns)
 
-    print(f"Inserting {num_replacement_cols}")
+    print(f"Inserting {num_replacement_cols} columns in place of '{column_name}'")
 
     ind_range = list(range(num_replacement_cols))
 
     ind_range.reverse()
 
-    print(ind_range)
+    # print(ind_range)
 
     for i in ind_range:
         # Insert column into original dataframe
