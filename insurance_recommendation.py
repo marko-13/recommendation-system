@@ -4,16 +4,27 @@ import numpy as np
 
 
 def run_data_preprocessing_pipeline():
+    '''
+    Returns a pandas dataframe of the preprocessed input and the column
+    index of the first form.
+    '''
     file_name = 'data/BC - AI ORIGINAL.csv'
 
     df = load_and_drop_data(file_name)
 
     df = decompose_columns(df)
 
+    cols = list(df.columns)
+
+    first_form_index = cols.index('MJIL 1000 08 10')
+
+    # print(first_form_index)
+
+    # print(df[df.columns[first_form_index]])
 
     df.to_csv('data/cleansed.csv', index=False)
 
-    return df
+    return df, first_form_index
 
 
 def load_and_drop_data(filename):
