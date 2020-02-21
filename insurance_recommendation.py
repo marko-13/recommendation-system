@@ -3,6 +3,10 @@ import pandas as pd
 import numpy as np
 
 
+def run_data_preprocessing_pipeline():
+    pass
+
+
 def load_and_drop_data(filename):
     df = pd.read_csv(filename, delimiter=',')
     # print(df)
@@ -17,7 +21,35 @@ def load_and_drop_data(filename):
     return df
 
 
-def decompose_column(df, column_name):
+def decompose_columns(df):
+    '''
+    Runs column decomposition on nominal columns in the dataframe.
+
+    Replaces said columns with True/False columns for every distinct
+    nominal value.
+    '''
+
+    decomp_columns = [
+        'BusinessSegment',
+        'Type',
+        'InsuredState',
+        'BrokerCompany',
+        'BrokerState',
+        'UnderwriterTeam',
+        'BusinessClassification'
+        ]
+
+    for col in decomp_columns:
+        try:
+            print(f'Trying {col}')
+            new_cols = _decompose_column(df, col)
+            df = _replace_column_with_decomposed(df, col, new_cols)
+        except ValueError:
+            print(f'---Failed {col}')
+
+    return df
+
+def _decompose_column(df, column_name):
     '''
     Decomposes a nominal column with N distinct inputs into N
     true/false columns. Essentialy creates a pandas dataframe
@@ -67,7 +99,7 @@ def decompose_column(df, column_name):
     return ret_df
 
 
-def replace_column_with_decomposed(df, column_name, df_decomposed):
+def _replace_column_with_decomposed(df, column_name, df_decomposed):
     '''
     Takes in a column name and replaces it with the columns 
     provided in df_decomposed.
