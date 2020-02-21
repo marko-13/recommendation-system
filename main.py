@@ -13,24 +13,8 @@ def main():
 
     df = load_and_drop_data(file_name)
 
-    decomp_columns = [
-        'BusinessSegment',
-        'Type',
-        'InsuredState',
-        'BrokerCompany',
-        'BrokerState',
-        'UnderwriterTeam',
-        'BusinessClassification'
-        ]
+    df = decompose_columns(df)
 
-    for col in decomp_columns:
-        try:
-            print(f'Trying {col}')
-            new_cols = decompose_column(df, col)
-            df = replace_column_with_decomposed(df, col, new_cols)
-        except ValueError:
-            print(f'---Failed {col}')
-            pass
 
     df.to_csv('data/cleansed.csv', index=False)
 
