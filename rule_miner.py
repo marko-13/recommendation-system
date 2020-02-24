@@ -30,8 +30,13 @@ from mlxtend.frequent_patterns import fpgrowth
 
 #         mother_list.append(child_list)
 
+<<<<<<< HEAD
 #     association_rules = apriori(mother_list, min_support=0.02, min_confidence=0.8, max_length=None, min_lift=0)
 #     association_results = list(association_rules)
+=======
+    association_rules = apriori(mother_list, min_support=0.02, min_confidence=0.8, max_length=20, min_lift=0)
+    association_results = list(association_rules)
+>>>>>>> a9e283e6873dff298a80bcf761b08157dc3a8e7b
 
 #     with open('log/rules_f1.pickle', 'wb') as f:
 #         pickle.dump(association_results, f)
