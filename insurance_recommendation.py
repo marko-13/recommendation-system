@@ -119,11 +119,12 @@ def decompose_columns(df):
 
     for col in decomp_columns:
         try:
-            print(f'Trying {col}')
+            # print(f'Trying {col}')
             new_cols = _decompose_column(df, col)
             df = _replace_column_with_decomposed(df, col, new_cols)
         except ValueError:
-            print(f'---Failed {col}')
+            # print(f'---Failed {col}')
+            pass
 
     return df
 
@@ -184,7 +185,7 @@ def _replace_column_with_decomposed(df, column_name, df_decomposed):
 
     num_replacement_cols = len(df_decomposed.columns)
 
-    print(f"Inserting {num_replacement_cols} columns in place of '{column_name}'")
+    # print(f"Inserting {num_replacement_cols} columns in place of '{column_name}'")
 
     ind_range = list(range(num_replacement_cols))
 

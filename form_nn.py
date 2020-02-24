@@ -61,7 +61,7 @@ def train_nn(model, X_train, y_train):
     return model, report
 
 
-def run_training_for_form(df, first_form_index):
+def run_training_for_all_forms(df, first_form_index):
 
     cols_to_train = list(df.columns.values[first_form_index:])
 

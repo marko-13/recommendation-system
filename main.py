@@ -3,7 +3,7 @@
 import movie_recommendation as mr
 import recommendation_engine as re
 import insurance_recommendation as ir
-# import rule_miner as rm
+import rule_miner as rm
 import form_nn
 
 from insurance_recommendation import *
@@ -18,4 +18,8 @@ if __name__ == "__main__":
 
     # rm.get_rules(df, first_form_index, first_form_index+1)
 
-    form_nn.run_training_for_form(df, first_form_index)
+    # Train the ANN
+    # form_nn.run_training_for_all_forms(df, first_form_index)
+
+    # Run FP Growth
+    rm.run_fp_growth(df, first_form_index, first_form_index)
