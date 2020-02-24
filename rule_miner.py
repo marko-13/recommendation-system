@@ -27,7 +27,7 @@ def get_rules(df, first_form_ind, target_form_ind):
 
         mother_list.append(child_list)
 
-    association_rules = apriori(mother_list, min_support=0.02, min_confidence=0.8, max_length=None, min_lift=0)
+    association_rules = apriori(mother_list, min_support=0.02, min_confidence=0.8, max_length=20, min_lift=0)
     association_results = list(association_rules)
 
     with open('log/rules_f1.pickle', 'wb') as f:
