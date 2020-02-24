@@ -13,4 +13,6 @@ if __name__ == "__main__":
 
     df, first_form_index = run_data_preprocessing_pipeline()
 
-    # rm.get_rules(df, first_form_index)
+    df1, first_form_index1 = run_data_preprocessing_pipeline_apyoi()
+
+    rm.get_rules(df, first_form_index, first_form_index+1)

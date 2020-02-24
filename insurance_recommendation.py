@@ -2,6 +2,16 @@
 import pandas as pd
 import numpy as np
 
+def run_data_preprocessing_pipeline_apyoi():
+    file_name = 'data/BC - AI ORIGINAL.csv'
+
+    df = load_and_drop_data(file_name)
+    cols = list(df.columns)
+
+    first_form_index = cols.index('MJIL 1000 08 10')
+
+    df, first_form_index = remove_unbalanced_columns(df, first_form_index)
+    return df, first_form_index
 
 def run_data_preprocessing_pipeline():
     '''
