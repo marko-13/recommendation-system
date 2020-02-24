@@ -51,15 +51,16 @@ def remove_unbalanced_columns(df, first_form_index):
 
         cur_ind = cols1.index(column)
 
-        print("Flag: " + str(flag))
-        if flag <= 0.005 and first_form_index > cur_ind:
-            print("Removing column based on unbalanced data: " + str(column))
-            with open('log/report.txt', 'a+') as f:
-                f.write(f"Column: {column} is dropped because of unbalanced data.\n")
-            df.drop(column, inplace=True, axis=1)
-            first_form_index -= 1
+        # IT IS NOT ADVISABLE TO DROP COLUMNS BECAUSE OF UNBALANCED DATA
+        # print("Flag: " + str(flag))
+        # if flag <= 0.005 and first_form_index > cur_ind:
+        #     print("Removing column based on unbalanced data: " + str(column))
+        #     with open('log/report.txt', 'a+') as f:
+        #         f.write(f"Column: {column} is dropped because of unbalanced data.\n")
+        #     df.drop(column, inplace=True, axis=1)
+        #     first_form_index -= 1
 
-    return  df, first_form_index
+    return df, first_form_index
 
 
 def load_and_drop_data(filename):
