@@ -1,13 +1,13 @@
+# imports
 from tensorflow import keras
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Activation
 from tensorflow.keras.optimizers import SGD
 
 import numpy as np
-
 import pickle
-
 import os
+
 
 def save_nn(model, report=None):
 
@@ -64,10 +64,6 @@ def train_nn(model, X_train, y_train):
 def run_training_for_all_forms(df, first_form_index):
 
     cols_to_train = list(df.columns.values[first_form_index:])
-
-    # print(cols_to_train)
-
-    # y = df.iloc[:, first_form_index:]
 
     X = df.iloc[:, :first_form_index]
     
