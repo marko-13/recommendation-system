@@ -12,6 +12,7 @@ def find_all_rules(df, first_form_index, algo):
     all_forms_cols = df.columns[first_form_index:]
     counter = 0
     for col in all_forms_cols:
+        print(f'[{algo}] - Finding rules for: {col}')
         if algo == 'apriori':
             run_apriori(df, first_form_index, first_form_index + counter)
         elif algo == 'fpg':
