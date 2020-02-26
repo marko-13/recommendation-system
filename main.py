@@ -39,8 +39,14 @@ if __name__ == "__main__":
     # print(selected_cols)
     selected_cols = ['BusinessSegment_Naughton Amusement', 'Type_Renewal', 'InsuredState_WI', 'BrokerCompany_AmWINS Access Insurance Services, LLC', 'BrokerState_OH', 'UnderwriterTeam_Brokerage Casualty - SouthEast', 'BusinessClassification_91581 Contractors - subcontracted work - in connection with construction, reconstruction, erection or repair - not buildings', 'Occurrence: General Liability', 'Limit Damage to Premises Rented to You', 'Limit Products / Completed Operations Aggregate', 'Limit Personal / Advertising Injury', 'Limit Per Project Aggregate', 'Limit Per Location Aggregate', 'Hired / Non-Owned Auto Liability', 'Other', 'Terrorism']
 
-    print("\n\n\nPOCEO RECOMMENDATION: " + str(datetime.datetime.now()))
+    print("\n\n\nPOCEO RECOMMENDATION FPG: " + str(datetime.datetime.now()))
     # Run cold start recommender
     rec_forms = csr.find_all_forms(df, 'fpg', selected_cols, first_form_index)
-    print("\n\n\nGOTOV RECOMMENDATION: " + str(datetime.datetime.now()))
+    print("\n\n\nGOTOV RECOMMENDATION FPG: " + str(datetime.datetime.now()))
+    print(rec_forms)
+
+    print("\n\n\nPOCEO RECOMMENDATION APRIORI: " + str(datetime.datetime.now()))
+    # Run cold start recommender
+    rec_forms = csr.find_all_forms(df, 'apriori', selected_cols, first_form_index)
+    print("\n\n\nGOTOV RECOMMENDATION APRIORI: " + str(datetime.datetime.now()))
     print(rec_forms)
