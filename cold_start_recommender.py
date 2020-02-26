@@ -70,7 +70,7 @@ class Recommender_bot():
 
         for form_field in self.user_input_fields:
             user_input = -1
-            while user_input == -1 or user_input >= len(self.user_input_fields):
+            while user_input == -1 or user_input >= len(self.user_input_fields[form_field]):
 
                 print(f'--- Select option for {form_field}')
 
@@ -206,8 +206,20 @@ def check_if_form_is_suitable(row, form_name, columns):
     # print(row)
 
     flag_ok = True
-    for wanted_column in columns:
-        if wanted_column not in row[1]:
+    index_first_curly = row[1].index('{')
+    index_second_curly = row[1].index('}')
+
+    cut_row = row[1][index_first_curly+1: index_second_curly]
+    row_split = cut_row.split(', ')
+    pom = []
+    for r in row_split:
+        pom.append(r[1: -1])
+
+    for wanted_column in pom:
+        if wanted_column not in columns:
+            # print(wanted_column)
+            # print(columns)
+            print("\n\n")
             flag_ok = False
             return flag_ok, 0
 
@@ -222,9 +234,9 @@ def check_if_form_is_suitable(row, form_name, columns):
         location_counter += location_counter
 
     conf = row[8]
-    # print(row[1])
-    # print(row[2])
-    # print("CONF: " + str(conf))
-    # print("\n\n")
+    print(row[1])
+    print(row[2])
+    print("CONF: " + str(conf))
+    print("\n\n")
 
     return flag_ok, conf
