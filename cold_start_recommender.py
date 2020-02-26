@@ -4,9 +4,93 @@ import pandas as pd
 
 class Recommender_bot():
 
-    def __init__(self):
-        pass
+    def __init__(self, df, first_form_index):
+        
+        user_input_columns = df.columns[:first_form_index]
 
+        print(len(user_input_columns))
+
+        # Group input data columns:
+
+        self.user_input_fields = {}
+        ind_of_last_decomposed_col = -1
+
+        for index, col in enumerate(user_input_columns):
+
+            if len(col.split('_')) == 1:
+                ind_of_last_decomposed_col = index
+                break
+
+            col_type = col.split('_')[0]
+
+            # If the column type is already in the dict,
+            # skip it
+            if col_type in self.user_input_fields:
+                continue
+
+            # print(f"Creating entry for {col_type}")
+
+            self.user_input_fields[col_type] = []
+
+            for curr_col in user_input_columns:
+
+                # print(f'{curr_col}')
+
+                if not curr_col.startswith(col_type):
+                    continue
+
+                col_type_option = curr_col.split('_')[1]
+
+                # print(f'--- INSERTING {col_type_option}')
+                
+                # print(f'----- APPENDING with {col_type}:{col_type_option}')
+                option_list = self.user_input_fields[col_type]
+                # print(type(option_list))
+                # print(option_list)
+                self.user_input_fields[col_type].append(col_type_option)
+
+        # Insert non-decomposed columns into the dict
+        for col in user_input_columns[ind_of_last_decomposed_col:]:
+            self.user_input_fields[col] = ["True", "False"]
+
+        for k, v in self.user_input_fields.items():
+            print(f'{k} -> []')
+
+    def input_cold_start(self):
+        pass        
+
+    def console_user_input(self):
+        '''
+        Presents the user with a series of questions. Marks the column names which
+        he selected and returns them.
+        '''
+        print("==============\nPlease fill in the form:")
+
+        true_columns = []
+
+        for form_field in self.user_input_fields:
+            user_input = -1
+            while user_input == -1 or user_input >= len(self.user_input_fields):
+
+                print(f'--- Select option for {form_field}')
+
+                for index, option in enumerate(self.user_input_fields[form_field]):
+                    print(f'[{index}] - {option}')
+
+                user_input = int(input())
+            
+            if self.user_input_fields[form_field] == ['True', 'False']:
+                # If it's a true/false column
+                true_columns.append(form_field)
+            else:
+                # If it's a multiple choice column
+                col_name = form_field + "_" + self.user_input_fields[form_field][user_input]
+                true_columns.append(col_name)
+        
+        print("========\nUser selection:")
+        print(true_columns)
+
+        return true_columns
 
     # Finds all forms based on rules from selected algorithm
     def find_all_forms(self, df, algo, columns, first_form_index):
