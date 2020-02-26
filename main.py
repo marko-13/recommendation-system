@@ -22,4 +22,4 @@ if __name__ == "__main__":
     # form_nn.run_training_for_all_forms(df, first_form_index)
 
     # Run FP Growth
-    rm.run_fp_growth(df, first_form_index, first_form_index)
+    rm.run_fp_growth(df, first_form_index, first_form_index + 1)
