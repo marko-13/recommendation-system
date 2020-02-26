@@ -51,7 +51,7 @@ class Recommender_bot():
 
         # Insert non-decomposed columns into the dict
         for col in user_input_columns[ind_of_last_decomposed_col:]:
-            self.user_input_fields[col] = ["True", "False"]
+            self.user_input_fields[col] = ["False", "True"]
 
         for k, v in self.user_input_fields.items():
             print(f'{k} -> []')
@@ -79,9 +79,10 @@ class Recommender_bot():
 
                 user_input = int(input())
             
-            if self.user_input_fields[form_field] == ['True', 'False']:
+            if self.user_input_fields[form_field] == ["False", "True"]:
                 # If it's a true/false column
-                true_columns.append(form_field)
+                if user_input == 1:
+                    true_columns.append(form_field)
             else:
                 # If it's a multiple choice column
                 col_name = form_field + "_" + self.user_input_fields[form_field][user_input]
