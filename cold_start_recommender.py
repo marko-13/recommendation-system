@@ -1,6 +1,9 @@
 # imports
 import pandas as pd
+import numpy as np
 
+# Local imports
+import form_nn
 
 class Recommender_bot():
 
@@ -105,13 +108,29 @@ def find_all_forms(df, algo, columns, first_form_index):
     # dict where key is form name and value is summed up confidence from all occurrences in rules
     confidence_dict = {}
     for col in all_forms_cols:
-        flag, confidence_sum = checks_given_form(col, algo, columns)
-        if flag:
-            confidence_dict[col] = confidence_sum
+        if algo != 'ann':
+            flag, confidence_sum = checks_given_form(col, algo, columns)
+            if flag:
+                confidence_dict[col] = confidence_sum
+        else:
+            # ANN prediction for given form
+            ann_pred = get_ann_prediction(df, first_form_index, columns, col)
+            confidence_dict[col] = ann_pred
 
     confidence_dict = {k: v for k, v in sorted(confidence_dict.items(), key=lambda item: item[1], reverse=True)}
     return confidence_dict
 
+def get_ann_prediction(df, first_form_index, user_input, form_to_check):
+    nn = form_nn.construct_nn(first_form_index, form_to_check)
+    nn = form_nn.load_nn(nn)
+
+    input_vec = form_nn.column_names_to_vector(df, user_input, first_form_index)
+
+    input_vec = np.array([input_vec])
+
+    pred = nn.predict(input_vec)
+
+    return pred[0][0]
 
 # checks if given form is suitable
 def checks_given_form(form_name, algo, columns):

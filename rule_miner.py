@@ -2,6 +2,12 @@
 import pickle
 import os
 import pandas as pd
+import numpy as np
+
+import sklearn
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.ensemble import RandomForestClassifier
+
 
 from mlxtend.frequent_patterns import fpgrowth
 from mlxtend.frequent_patterns import apriori
@@ -17,6 +23,17 @@ def find_all_rules(df, first_form_index, algo):
             run_apriori(df, first_form_index, first_form_index + counter)
         elif algo == 'fpg':
             run_fp_growth(df, first_form_index, first_form_index + counter)
+        elif algo == 'random_forest':
+            try:
+                # TODO: Iz nekog razloga, samo prva iteracija ovde uspe. 
+                # Cak i ako se prosledi counter + 1, ako je to prva iteracija, 
+                # odradice kako treba, a odmah sledeci ce da pukne
+                # PASS BY REFERENCE: kopirati df pre prosledjivanja, to je bio bag...
+                run_random_forest(df.copy(), first_form_index, first_form_index + counter)
+                # print(df.head())
+                # break
+            except ValueError:
+                pass
         else:
             print("INVALID ALGORITHM NAME")
             exit(1)
@@ -80,6 +97,69 @@ def run_fp_growth(df, first_form_ind, target_form_ind):
     _save_rules(res_df, label_col_name, 'relevant', algo='fpg')
 
 
+def run_random_forest(df, first_form_ind, target_form_ind):
+    # encoders = {}
+    feature_cols = df.columns[:first_form_ind].tolist()
+
+    first_numerical_col_name = 'Occurrence: General Liability'
+
+    first_num_col_ind = feature_cols.index(first_numerical_col_name)
+
+    categorical_columns = feature_cols[:first_num_col_ind]
+
+    # Place all encoders into a list
+    for feature_col in categorical_columns:
+        # print(feature_col)
+        all_features_in_col = df[feature_col].tolist()
+
+        # print(all_features_in_col[:5])
+        
+        all_features_in_col = [[feature] if feature else ["Empty"] for feature in all_features_in_col]
+        
+        # print(all_features_in_col[:5])
+
+        enc = OneHotEncoder(handle_unknown='ignore')
+
+        enc.fit(all_features_in_col)
+        
+        # Encode the column
+
+        df[feature_col] = df[feature_col].apply(lambda x: enc.transform([[x]]).toarray()[0][0] )
+
+        # encoders[feature_col] = enc
+
+    # After 1-hot encoding of the categorical data is done, 
+    # select the relevant columns
+
+    # print(df[[df.columns.tolist()[target_form_ind]]])
+
+    df = df[feature_cols + [df.columns.tolist()[target_form_ind]]]
+
+    features = df.columns[:-1]
+
+    class_feature = df.columns[-1]
+
+    clf = RandomForestClassifier(n_jobs=2, random_state=0)
+
+    class_vals = np.array(df[class_feature].tolist())
+    print(df.shape)
+    # print(type(class_vals))
+    # print(df['BusinessSegment'].tolist())
+    # print(df)
+
+    # print(df[class_feature].tolist())
+
+    clf.fit(df[features], class_vals)
+
+    form_name = df.columns.tolist()[-1]
+
+    _save_rules(df, form_name, "", 'random_forest', clf)
+
+    
+    
+
+
+
 def extract_relevant_itemsets(rules_df, form_name):
     '''
     Extracts rules that contain the form occurence
@@ -96,7 +176,7 @@ def extract_relevant_itemsets(rules_df, form_name):
     return pd.DataFrame(rel_rows)
 
 
-def _save_rules(df, form_name, file_name, algo):
+def _save_rules(df, form_name, file_name, algo, obj_to_save=None):
     if not os.path.exists('models'):
         os.mkdir('models')
 
@@ -117,6 +197,17 @@ def _save_rules(df, form_name, file_name, algo):
             os.mkdir(f'models/apriori/{form_name}')
 
         df.to_csv(f'models/apriori/{form_name}/{file_name}.csv')
+
+    elif algo == 'random_forest':
+        if not os.path.exists('models/random_forest'):
+            os.mkdir('models/random_forest')
+
+        if not os.path.exists(f'models/random_forest/{form_name}'):
+            os.mkdir(f'models/random_forest/{form_name}')
+
+        if obj_to_save:
+            with open(f'models/random_forest/{form_name}/r_forest.pickle', 'wb') as f:
+                pickle.dump(obj_to_save, f)
 
     else:
         print("Could not save rules")

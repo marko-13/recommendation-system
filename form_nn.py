@@ -91,3 +91,15 @@ def run_training_for_all_forms(df, first_form_index):
         model, report = train_nn(model, all_inputs, labels)
 
         save_nn(model, report)
+
+def column_names_to_vector(df, col_names, first_form_index):
+    '''
+    Converts a list of column names to a {0, 1} vector of all
+    of the possible inputs to the network.
+    '''
+    all_cols = df.columns[:first_form_index]
+
+    ret_vector = [1 if col in col_names else 0 for col in all_cols]
+    
+    return ret_vector
+        
