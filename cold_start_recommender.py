@@ -187,9 +187,6 @@ def check_if_form_is_suitable(row, form_name, columns):
 
     for wanted_column in pom:
         if wanted_column not in columns:
-            # print(wanted_column)
-            # print(columns)
-            # print("\n\n")
             flag_ok = False
             return flag_ok, 0
 
@@ -204,10 +201,6 @@ def check_if_form_is_suitable(row, form_name, columns):
         location_counter += location_counter
 
     conf = row[8]
-    # print(row[1])
-    # print(row[2])
-    # print("CONF: " + str(conf))
-    # print("\n\n")
 
     return flag_ok, conf
 
@@ -219,19 +212,6 @@ def _create_vector_for_random_forest(all_columns, user_input):
     '''
     retval = []
 
-    # curr = user_input[0]
-    # # Add the nominal inputs
-    # while len(curr.split('_')) is 2:
-    #     print(f"Splitting: {curr}")
-    #     curr = user_input.pop(0)
-    #     parts = curr.split('_')
-    #     retval.append(parts)
-        
-    #     all_columns.pop(0)
-    #     curr = user_input[0]
-
-    # print(all_columns)
-
     # Add the True/False inputs
     for col in all_columns:
         if col in user_input:
@@ -241,16 +221,5 @@ def _create_vector_for_random_forest(all_columns, user_input):
 
     return retval
 
-    
-    # Now add the False/True inputs
-
-
-    # Columns with '_' should be split
-    # for inp in user_input:
-        # parts = inp.split("_")
-        # if len(parts) == 2:
-            # pass
-        # else:
-            # pass
 
     

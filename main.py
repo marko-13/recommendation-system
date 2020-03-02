@@ -11,6 +11,49 @@ from insurance_recommendation import *
 
 import os
 
+def give_all_predictions(df, first_form_index, user_input):
+    
+    all_forms = df.columns[first_form_index:].tolist()
+
+    for form in all_forms:
+
+        print('\n\n\n===============')
+        print(form)
+        print('===============')
+
+        # ANN prediction
+        nn = form_nn.construct_nn(first_form_index, form)
+        nn = form_nn.load_nn(nn)
+
+        input_vec = form_nn.column_names_to_vector(df, user_input, first_form_index)
+
+        input_vec = np.array([input_vec])
+
+        ann_pred = nn.predict(input_vec)
+
+        print(f"[ANN] - {ann_pred}")
+
+        # Random forest prediction
+        input_vec = csr._create_vector_for_random_forest(df.columns[:first_form_index].tolist(), user_input)
+
+        rf_pred = csr.random_forest_predict(input_vec, form)
+        
+        print(f'[RANDOM FOREST] - {rf_pred}')
+
+        # Apriori
+
+        flag, apriori_conf = csr.checks_given_form(form, 'apriori', user_input)
+
+        print(f'[APRIORI] - {apriori_conf}')
+
+        # FP Growth
+
+        flag, fpg_conf = csr.checks_given_form(form, 'apriori', user_input)
+
+        print(f'[FP GROWTH] - {fpg_conf}')
+
+
+
 if __name__ == "__main__":
 
     df, first_form_index = run_data_preprocessing_pipeline()
@@ -51,17 +94,19 @@ if __name__ == "__main__":
     # selected_cols = bot.console_user_input()
     selected_cols = ['BusinessSegment_Naughton Motorsports', 'Type_New', 'InsuredState_LA', 'BrokerCompany_Socius Insurance Services, Inc.', 'BrokerState_MO', 'UnderwriterTeam_Brokerage Casualty - SouthEast', 'BusinessClassification_53374 Food Products Mfg. - dry', 'Occurrence: Owners & Contractors Protective', 'Limit Damage to Premises Rented to You', 'Each Common Cause Liquor Liability', 'Other', 'Terrorism']
 
-    print("All columns:")
-    print(df.columns[:first_form_index].tolist())
+    give_all_predictions(df, first_form_index, selected_cols)
 
-    input_vec = csr._create_vector_for_random_forest(df.columns[:first_form_index].tolist(), selected_cols)
-    print(f'First form index: {first_form_index}')
-    print(len(input_vec))
-    print(input_vec)
+    # print("All columns:")
+    # print(df.columns[:first_form_index].tolist())
 
-    for dir in os.listdir('models/random_forest'):
-        prediction = csr.random_forest_predict(input_vec, dir)
-        print(prediction)
+    # input_vec = csr._create_vector_for_random_forest(df.columns[:first_form_index].tolist(), selected_cols)
+    # print(f'First form index: {first_form_index}')
+    # print(len(input_vec))
+    # print(input_vec)
+
+    # for dir in os.listdir('models/random_forest'):
+    #     prediction = csr.random_forest_predict(input_vec, dir)
+    #     print(prediction)
 
     # selected_cols = ['BusinessSegment_Naughton Motorsports', 'Type_New', 'InsuredState_LA', 'BrokerCompany_Socius Insurance Services, Inc.', 'BrokerState_MO', 'UnderwriterTeam_Brokerage Casualty - SouthEast', 'BusinessClassification_53374 Food Products Mfg. - dry', 'Occurrence: Owners & Contractors Protective', 'Limit Damage to Premises Rented to You', 'Each Common Cause Liquor Liability', 'Other', 'Terrorism']
 
