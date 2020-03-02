@@ -220,6 +220,3 @@ def _create_vector_for_random_forest(all_columns, user_input):
             retval.append(0)
 
     return retval
-
-
-    
