@@ -27,7 +27,9 @@ def give_all_predictions(df, first_form_index, user_input):
         input_vec = form_nn.column_names_to_vector(df, user_input, first_form_index)
         input_vec = np.array([input_vec])
         ann_pred = nn.predict(input_vec)
-        print(f"[ANN] - {ann_pred}")
+        temp_l = float(np.asarray(ann_pred))
+        print(type(temp_l))
+        print(f"[ANN] - {temp_l}")
 
         # Apriori
         flag, apriori_conf = csr.checks_given_form(form, 'apriori', user_input)
@@ -44,24 +46,23 @@ def give_all_predictions(df, first_form_index, user_input):
 
 
 def move_me_pls(df, first_form_index, target_form_index, user_input):
-    import lime
     import lime.lime_tabular
     feature_names = df.columns.tolist()[:first_form_index]
     
     target_form_name = df.columns.tolist()[target_form_index]
 
-    with open(f'models/random_forest/{target_form_name}/r_forest.pickle', 'rb') as f:
-        clf = pickle.load(f)
+    nn = form_nn.construct_nn(first_form_index, target_form_name)
+    nn = form_nn.load_nn(nn)
+    nn = form_nn.load_nn(nn)
 
-        print(type(df[feature_names].values))
-        explainer = lime.lime_tabular.LimeTabularExplainer(df[feature_names].values, feature_names=feature_names, class_names=['False, True'], discretize_continuous=True)
+    print(type(df[feature_names].values))
+    explainer = lime.lime_tabular.LimeTabularExplainer(df[feature_names].values, feature_names=feature_names, class_names=['True', 'False'], discretize_continuous=True)
 
-        input_vec = form_nn.column_names_to_vector(df, user_input, first_form_index)
+    input_vec = form_nn.column_names_to_vector(df, user_input, first_form_index)
 
-        exp = explainer.explain_instance(np.array(input_vec), clf.predict_proba, num_features=2, top_labels=1)
+    exp = explainer.explain_instance(np.array(input_vec), nn.predict_proba, num_features=2, top_labels=1)
 
-        print(exp)
-
+    print(exp)
 
 
 if __name__ == "__main__":
@@ -96,3 +97,5 @@ if __name__ == "__main__":
     # give_all_predictions(df, first_form_index, selected_cols)
 
     move_me_pls(df, first_form_index, first_form_index, selected_cols)
+
+    rm.run_fp_growth_item_based(df, first_form_index, first_form_index +5)

@@ -41,6 +41,19 @@ def find_all_rules(df, first_form_index, algo):
         counter += 1
 
 
+def run_apriori_item_based(df, first_form_index, target_form_ind):
+    pass
+
+
+def run_fp_growth_item_based(df, first_form_index, target_form_ind):
+
+    input_columns = df.columns[first_form_index:target_form_ind]
+    # input_columns.append(df.columns[target_form_ind+1:])
+    print(type(input_columns))
+
+    print(input_columns)
+
+
 def run_apriori(df, first_form_index, target_form_ind):
     input_columns = df.columns[:first_form_index]
 

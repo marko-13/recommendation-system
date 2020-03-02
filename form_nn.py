@@ -31,6 +31,7 @@ def load_nn(model):
 
     return model
 
+
 def construct_nn(input_dim, form_name):
     
     model = Sequential()
@@ -40,7 +41,7 @@ def construct_nn(input_dim, form_name):
 
     model.add(Dense(128, input_dim=input_dim, activation='relu'))
     model.add(Dense(64, input_dim=128, activation='relu'))
-    model.add(Dense(1, input_dim=64, activation='sigmoid'))
+    model.add(Dense(2, input_dim=64, activation='softmax'))
 
     return model
 
@@ -51,6 +52,17 @@ def train_nn(model, X_train, y_train):
 
     X_train = np.array(X_train, np.float32)
     y_train = np.array(y_train, np.float32)
+    # adapter za dve klase, jeste forma nije forma zbog lime explanatora
+    pom_y = []
+    for val in y_train:
+        arr = []
+        if val == 1:
+            arr = [1, 0]
+        else:
+            arr = [0, 1]
+
+        pom_y.append(arr)
+    y_train = np.array(pom_y, np.float32)
 
     sgd = SGD(lr=0.001, momentum=0.9)
 
@@ -83,6 +95,7 @@ def run_training_for_all_forms(df, first_form_index):
     # Extract labels for each form:
     for col_name in cols_to_train:
         curr_col = df[col_name]
+        print(curr_col)
         labels = curr_col.values
 
         # the first_form_index represents the input length
