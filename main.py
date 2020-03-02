@@ -67,6 +67,6 @@ if __name__ == "__main__":
 
 
     # bot = csr.Recommender_bot(df, first_form_index)
-    # # selected_cols = bot.console_user_input()
+    # selected_cols = bot.console_user_input()
     selected_cols = ['BusinessSegment_Naughton Motorsports', 'Type_New', 'InsuredState_LA', 'BrokerCompany_Socius Insurance Services, Inc.', 'BrokerState_MO', 'UnderwriterTeam_Brokerage Casualty - SouthEast', 'BusinessClassification_53374 Food Products Mfg. - dry', 'Occurrence: Owners & Contractors Protective', 'Limit Damage to Premises Rented to You', 'Each Common Cause Liquor Liability', 'Other', 'Terrorism']
     give_all_predictions(df, first_form_index, selected_cols)

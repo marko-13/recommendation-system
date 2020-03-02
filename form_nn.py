@@ -102,4 +102,3 @@ def column_names_to_vector(df, col_names, first_form_index):
     ret_vector = [1 if col in col_names else 0 for col in all_cols]
     
     return ret_vector
-        
