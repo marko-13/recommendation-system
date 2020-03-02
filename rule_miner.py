@@ -32,8 +32,8 @@ def find_all_rules(df, first_form_index, algo):
                 run_random_forest(df.copy(), first_form_index, first_form_index + counter)
                 # print(df.head())
                 # break
-            except ValueError:
-                pass
+            except ValueError as e:
+                print(f'[ValueError] {e}')
         else:
             print("INVALID ALGORITHM NAME")
             exit(1)
@@ -95,43 +95,11 @@ def run_fp_growth(df, first_form_ind, target_form_ind):
     # Save only the relevant rules
     # res_df.to_csv(f'log/fp_growth_{label_col_name}_relevant.csv')
     _save_rules(res_df, label_col_name, 'relevant', algo='fpg')
-
+    
 
 def run_random_forest(df, first_form_ind, target_form_ind):
-    # encoders = {}
+
     feature_cols = df.columns[:first_form_ind].tolist()
-
-    first_numerical_col_name = 'Occurrence: General Liability'
-
-    first_num_col_ind = feature_cols.index(first_numerical_col_name)
-
-    categorical_columns = feature_cols[:first_num_col_ind]
-
-    # Place all encoders into a list
-    for feature_col in categorical_columns:
-        # print(feature_col)
-        all_features_in_col = df[feature_col].tolist()
-
-        # print(all_features_in_col[:5])
-        
-        all_features_in_col = [[feature] if feature else ["Empty"] for feature in all_features_in_col]
-        
-        # print(all_features_in_col[:5])
-
-        enc = OneHotEncoder(handle_unknown='ignore')
-
-        enc.fit(all_features_in_col)
-        
-        # Encode the column
-
-        df[feature_col] = df[feature_col].apply(lambda x: enc.transform([[x]]).toarray()[0][0] )
-
-        # encoders[feature_col] = enc
-
-    # After 1-hot encoding of the categorical data is done, 
-    # select the relevant columns
-
-    # print(df[[df.columns.tolist()[target_form_ind]]])
 
     df = df[feature_cols + [df.columns.tolist()[target_form_ind]]]
 
@@ -142,22 +110,12 @@ def run_random_forest(df, first_form_ind, target_form_ind):
     clf = RandomForestClassifier(n_jobs=2, random_state=0)
 
     class_vals = np.array(df[class_feature].tolist())
-    print(df.shape)
-    # print(type(class_vals))
-    # print(df['BusinessSegment'].tolist())
-    # print(df)
 
-    # print(df[class_feature].tolist())
-
-    clf.fit(df[features], class_vals)
+    clf.fit(df[features].values, class_vals)
 
     form_name = df.columns.tolist()[-1]
 
     _save_rules(df, form_name, "", 'random_forest', clf)
-
-    
-    
-
 
 
 def extract_relevant_itemsets(rules_df, form_name):

@@ -1,6 +1,7 @@
 # imports
 import pandas as pd
 import numpy as np
+import pickle
 
 # Local imports
 import form_nn
@@ -132,6 +133,17 @@ def get_ann_prediction(df, first_form_index, user_input, form_to_check):
 
     return pred[0][0]
 
+def random_forest_predict(input_vec, form_name):
+
+    with open(f'models/random_forest/{form_name}/r_forest.pickle', 'rb') as f:
+        clf = pickle.load(f)
+
+        return clf.predict([input_vec])
+
+    return None
+        
+
+
 # checks if given form is suitable
 def checks_given_form(form_name, algo, columns):
     # columns contains names of all columns whose values are True(1)
@@ -198,3 +210,47 @@ def check_if_form_is_suitable(row, form_name, columns):
     # print("\n\n")
 
     return flag_ok, conf
+
+def _create_vector_for_random_forest(all_columns, user_input):
+    '''
+    Args:
+        all_columns: All of the form fields
+        user_input: Form fields for which the user gave an answer
+    '''
+    retval = []
+
+    # curr = user_input[0]
+    # # Add the nominal inputs
+    # while len(curr.split('_')) is 2:
+    #     print(f"Splitting: {curr}")
+    #     curr = user_input.pop(0)
+    #     parts = curr.split('_')
+    #     retval.append(parts)
+        
+    #     all_columns.pop(0)
+    #     curr = user_input[0]
+
+    # print(all_columns)
+
+    # Add the True/False inputs
+    for col in all_columns:
+        if col in user_input:
+            retval.append(1)
+        else:
+            retval.append(0)
+
+    return retval
+
+    
+    # Now add the False/True inputs
+
+
+    # Columns with '_' should be split
+    # for inp in user_input:
+        # parts = inp.split("_")
+        # if len(parts) == 2:
+            # pass
+        # else:
+            # pass
+
+    

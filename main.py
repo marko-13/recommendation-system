@@ -9,16 +9,20 @@ import cold_start_recommender as csr
 
 from insurance_recommendation import *
 
+import os
+
 if __name__ == "__main__":
 
     df, first_form_index = run_data_preprocessing_pipeline()
 
     # Need non-decomposed columns for random forest
-    df_non_decomposed, first_form_index = run_data_preprocessing_pipeline_apyoi()
+    # df_non_decomposed, first_form_index_non_dec = run_data_preprocessing_pipeline_apyoi()
 
     # FIND RULES FOR RANDOM FOREST
 
-    rm.find_all_rules(df_non_decomposed, first_form_index, 'random_forest')
+    # rm.find_all_rules(df, first_form_index, 'random_forest')
+
+
 
     # df1, first_form_index1 = run_data_preprocessing_pipeline_apyoi()
 
@@ -43,9 +47,21 @@ if __name__ == "__main__":
     # MAIN PROGRAM
     # ============
 
-    # bot = csr.Recommender_bot(df, first_form_index)
+    bot = csr.Recommender_bot(df, first_form_index)
     # selected_cols = bot.console_user_input()
-    # print(selected_cols)
+    selected_cols = ['BusinessSegment_Naughton Motorsports', 'Type_New', 'InsuredState_LA', 'BrokerCompany_Socius Insurance Services, Inc.', 'BrokerState_MO', 'UnderwriterTeam_Brokerage Casualty - SouthEast', 'BusinessClassification_53374 Food Products Mfg. - dry', 'Occurrence: Owners & Contractors Protective', 'Limit Damage to Premises Rented to You', 'Each Common Cause Liquor Liability', 'Other', 'Terrorism']
+
+    print("All columns:")
+    print(df.columns[:first_form_index].tolist())
+
+    input_vec = csr._create_vector_for_random_forest(df.columns[:first_form_index].tolist(), selected_cols)
+    print(f'First form index: {first_form_index}')
+    print(len(input_vec))
+    print(input_vec)
+
+    for dir in os.listdir('models/random_forest'):
+        prediction = csr.random_forest_predict(input_vec, dir)
+        print(prediction)
 
     # selected_cols = ['BusinessSegment_Naughton Motorsports', 'Type_New', 'InsuredState_LA', 'BrokerCompany_Socius Insurance Services, Inc.', 'BrokerState_MO', 'UnderwriterTeam_Brokerage Casualty - SouthEast', 'BusinessClassification_53374 Food Products Mfg. - dry', 'Occurrence: Owners & Contractors Protective', 'Limit Damage to Premises Rented to You', 'Each Common Cause Liquor Liability', 'Other', 'Terrorism']
 
