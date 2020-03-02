@@ -8,6 +8,8 @@ import datetime
 import cold_start_recommender as csr
 from insurance_recommendation import *
 import os
+import pickle
+import numpy as np
 
 def give_all_predictions(df, first_form_index, user_input):
     
@@ -41,9 +43,31 @@ def give_all_predictions(df, first_form_index, user_input):
         print(f'[RANDOM FOREST] - {rf_pred}')
 
 
+def move_me_pls(df, first_form_index, target_form_index, user_input):
+    import lime
+    import lime.lime_tabular
+    feature_names = df.columns.tolist()[:first_form_index]
+    
+    target_form_name = df.columns.tolist()[target_form_index]
+
+    with open(f'models/random_forest/{target_form_name}/r_forest.pickle', 'rb') as f:
+        clf = pickle.load(f)
+
+        print(type(df[feature_names].values))
+        explainer = lime.lime_tabular.LimeTabularExplainer(df[feature_names].values, feature_names=feature_names, class_names=['False, True'], discretize_continuous=True)
+
+        input_vec = form_nn.column_names_to_vector(df, user_input, first_form_index)
+
+        exp = explainer.explain_instance(np.array(input_vec), clf.predict_proba, num_features=2, top_labels=1)
+
+        print(exp)
+
+
+
 if __name__ == "__main__":
 
     df, first_form_index = run_data_preprocessing_pipeline()
+
 
     # print("\n\n\nPOCEO ANN: " + str(datetime.datetime.now()))
     # # Train the ANN
@@ -69,4 +93,6 @@ if __name__ == "__main__":
     # bot = csr.Recommender_bot(df, first_form_index)
     # # selected_cols = bot.console_user_input()
     selected_cols = ['BusinessSegment_Naughton Motorsports', 'Type_New', 'InsuredState_LA', 'BrokerCompany_Socius Insurance Services, Inc.', 'BrokerState_MO', 'UnderwriterTeam_Brokerage Casualty - SouthEast', 'BusinessClassification_53374 Food Products Mfg. - dry', 'Occurrence: Owners & Contractors Protective', 'Limit Damage to Premises Rented to You', 'Each Common Cause Liquor Liability', 'Other', 'Terrorism']
-    give_all_predictions(df, first_form_index, selected_cols)
+    # give_all_predictions(df, first_form_index, selected_cols)
+
+    move_me_pls(df, first_form_index, first_form_index, selected_cols)
