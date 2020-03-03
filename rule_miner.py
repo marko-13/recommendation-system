@@ -3,6 +3,7 @@ import pickle
 import os
 import pandas as pd
 import numpy as np
+import datetime
 
 import sklearn
 from sklearn.preprocessing import OneHotEncoder
@@ -21,17 +22,16 @@ def find_all_rules(df, first_form_index, algo):
         print(f'[{algo}] - Finding rules for: {col}')
         if algo == 'apriori':
             run_apriori(df, first_form_index, first_form_index + counter)
+        elif algo == 'apriori_item_based':
+            run_apriori_item_based(df, first_form_index, first_form_index + counter)
         elif algo == 'fpg':
             run_fp_growth(df, first_form_index, first_form_index + counter)
+        elif algo == 'fpg_item_based':
+            run_fp_growth_item_based(df, first_form_index, first_form_index + counter)
         elif algo == 'random_forest':
             try:
-                # TODO: Iz nekog razloga, samo prva iteracija ovde uspe. 
-                # Cak i ako se prosledi counter + 1, ako je to prva iteracija, 
-                # odradice kako treba, a odmah sledeci ce da pukne
                 # PASS BY REFERENCE: kopirati df pre prosledjivanja, to je bio bag...
                 run_random_forest(df.copy(), first_form_index, first_form_index + counter)
-                # print(df.head())
-                # break
             except ValueError as e:
                 print(f'[ValueError] {e}')
         else:
@@ -42,16 +42,36 @@ def find_all_rules(df, first_form_index, algo):
 
 
 def run_apriori_item_based(df, first_form_index, target_form_ind):
-    pass
+    input_columns = df.columns[first_form_index:]
+    input_df = df[input_columns]
+    label_col_name = df.columns[target_form_ind]
+
+    res_df = apriori(input_df, min_support=0.8, use_colnames=True, max_len=4, verbose=0)
+    res_df = mlxtend.frequent_patterns.association_rules(res_df)
+
+    _save_rules(res_df, label_col_name, 'all', algo='apriori_item_based')
+
+    res_df = extract_relevant_itemsets(res_df, label_col_name)
+
+    _save_rules(res_df, label_col_name, 'relevant', algo='apriori_item_based')
+    print("\n\n\n ZAVRSIO PRAVILA ZA FORMU " + str(label_col_name) + "    " + str(datetime.datetime.now()))
 
 
 def run_fp_growth_item_based(df, first_form_index, target_form_ind):
 
-    input_columns = df.columns[first_form_index:target_form_ind]
-    # input_columns.append(df.columns[target_form_ind+1:])
-    print(type(input_columns))
+    input_columns = df.columns[first_form_index:]
+    input_df = df[input_columns]
+    label_col_name = df.columns[target_form_ind]
 
-    print(input_columns)
+    res_df = fpgrowth(input_df, min_support=0.8, use_colnames=True, max_len=4, verbose=0)
+    res_df = mlxtend.frequent_patterns.association_rules(res_df)
+
+    _save_rules(res_df, label_col_name, 'all', algo='fpg_item_based')
+
+    res_df = extract_relevant_itemsets(res_df, label_col_name)
+
+    _save_rules(res_df, label_col_name, 'relevant', algo='fpg_item_based')
+    print("\n\n\n ZAVRSIO PRAVILA ZA FORMU " + str(label_col_name) + "    " + str(datetime.datetime.now()))
 
 
 def run_apriori(df, first_form_index, target_form_ind):
@@ -160,6 +180,15 @@ def _save_rules(df, form_name, file_name, algo, obj_to_save=None):
 
         df.to_csv(f'models/fp_growth/{form_name}/{file_name}.csv')
 
+    elif algo == 'fpg_item_based':
+        if not os.path.exists('models/fpg_item_based'):
+            os.mkdir('models/fpg_item_based')
+
+        if not os.path.exists(f'models/fpg_item_based/{form_name}'):
+            os.mkdir(f'models/fpg_item_based/{form_name}')
+
+        df.to_csv(f'models/fpg_item_based/{form_name}/{file_name}.csv')
+
     elif algo == 'apriori':
         if not os.path.exists('models/apriori'):
             os.mkdir('models/apriori')
@@ -168,6 +197,15 @@ def _save_rules(df, form_name, file_name, algo, obj_to_save=None):
             os.mkdir(f'models/apriori/{form_name}')
 
         df.to_csv(f'models/apriori/{form_name}/{file_name}.csv')
+
+    elif algo == 'apriori_item_based':
+        if not os.path.exists('models/apriori_item_based'):
+            os.mkdir('models/apriori_item_based')
+
+        if not os.path.exists(f'models/apriori_item_based/{form_name}'):
+            os.mkdir(f'models/apriori_item_based/{form_name}')
+
+        df.to_csv(f'models/apriori_item_based/{form_name}/{file_name}.csv')
 
     elif algo == 'random_forest':
         if not os.path.exists('models/random_forest'):

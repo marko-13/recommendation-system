@@ -121,6 +121,7 @@ def find_all_forms(df, algo, columns, first_form_index):
     confidence_dict = {k: v for k, v in sorted(confidence_dict.items(), key=lambda item: item[1], reverse=True)}
     return confidence_dict
 
+
 def get_ann_prediction(df, first_form_index, user_input, form_to_check):
     nn = form_nn.construct_nn(first_form_index, form_to_check)
     nn = form_nn.load_nn(nn)

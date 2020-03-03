@@ -7,59 +7,25 @@ import pickle
 import form_nn
 
 
-class Recommender_bot():
+class Recommender_bot_item_based():
 
     def __init__(self, df, first_form_index):
 
-        user_input_columns = df.columns[:first_form_index]
+        user_input_columns = df.columns[first_form_index:]
 
         print(len(user_input_columns))
 
         # Group input data columns:
 
         self.user_input_fields = {}
-        ind_of_last_decomposed_col = -1
-
-        for index, col in enumerate(user_input_columns):
-
-            if len(col.split('_')) == 1:
-                ind_of_last_decomposed_col = index
-                break
-
-            col_type = col.split('_')[0]
-
-            # If the column type is already in the dict,
-            # skip it
-            if col_type in self.user_input_fields:
-                continue
-
-            # print(f"Creating entry for {col_type}")
-
-            self.user_input_fields[col_type] = []
-
-            for curr_col in user_input_columns:
-
-                # print(f'{curr_col}')
-
-                if not curr_col.startswith(col_type):
-                    continue
-
-                col_type_option = curr_col.split('_')[1]
-
-                # print(f'--- INSERTING {col_type_option}')
-
-                # print(f'----- APPENDING with {col_type}:{col_type_option}')
-                option_list = self.user_input_fields[col_type]
-                # print(type(option_list))
-                # print(option_list)
-                self.user_input_fields[col_type].append(col_type_option)
 
         # Insert non-decomposed columns into the dict
-        for col in user_input_columns[ind_of_last_decomposed_col:]:
+        for col in user_input_columns:
             self.user_input_fields[col] = ["False", "True"]
 
         for k, v in self.user_input_fields.items():
             print(f'{k} -> []')
+
 
     def input_cold_start(self):
         pass
@@ -149,10 +115,10 @@ def random_forest_predict(input_vec, form_name):
 def checks_given_form(form_name, algo, columns):
     # columns contains names of all columns whose values are True(1)
 
-    if algo == 'apriori':
-        df = pd.read_csv(f"models/apriori/{form_name}/relevant.csv", delimiter=',')
-    elif algo == 'fpg':
-        df = pd.read_csv(f"models/fp_growth/{form_name}/relevant.csv", delimiter=',')
+    if algo == 'apriori_item_based':
+        df = pd.read_csv(f"models/apriori_item_based/{form_name}/relevant.csv", delimiter=',')
+    elif algo == 'fpg_item_based':
+        df = pd.read_csv(f"models/fpg_item_based/{form_name}/relevant.csv", delimiter=',')
     else:
         print("INVALID ALGORITHM")
         exit(1)
