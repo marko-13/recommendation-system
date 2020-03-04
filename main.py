@@ -104,35 +104,35 @@ if __name__ == "__main__":
     # ------------------------------------------------------------------------------------------------------------------
     # TRAIN MODELS AND GET RULES FUNCTIONS
 
-    print("\n\n\nPOCEO ANN: " + str(datetime.datetime.now()))
-    # Train the ANN
-    form_nn.run_training_for_all_forms(df, first_form_index)
-    print("\n\n\nGOTOV ANN: " + str(datetime.datetime.now()))
+    # print("\n\n\nPOCEO ANN: " + str(datetime.datetime.now()))
+    # # Train the ANN
+    # form_nn.run_training_for_all_forms(df, first_form_index)
+    # print("\n\n\nGOTOV ANN: " + str(datetime.datetime.now()))
 
-    print("\n\n\nPOCEO ANN ITEM BASED: " + str(datetime.datetime.now()))
-    # Train the ANN item based
-    form_nn_item_based.run_training_for_all_forms(df, first_form_index)
-    print("\n\n\nGOTOV ANN ITEM BASED: " + str(datetime.datetime.now()))
+    # print("\n\n\nPOCEO ANN ITEM BASED: " + str(datetime.datetime.now()))
+    # # Train the ANN item based
+    # form_nn_item_based.run_training_for_all_forms(df, first_form_index)
+    # print("\n\n\nGOTOV ANN ITEM BASED: " + str(datetime.datetime.now()))
 
     # print("\n\n\nPOCEO FPG: " + str(datetime.datetime.now()))
     # # Run FP Growth
     # rm.find_all_rules(df, first_form_index, algo='fpg')
     # print("\n\n\nGOTOV FPG: " + str(datetime.datetime.now()))
 
-    print("\n\n\nPOCEO FPG ITEM BASED: " + str(datetime.datetime.now()))
-    # Run FP Growth item based
-    rm.find_all_rules(df, first_form_index, algo='fpg_item_based')
-    print("\n\n\nGOTOV FPG ITEM BASED: " + str(datetime.datetime.now()))
+    # print("\n\n\nPOCEO FPG ITEM BASED: " + str(datetime.datetime.now()))
+    # # Run FP Growth item based
+    # rm.find_all_rules(df, first_form_index, algo='fpg_item_based')
+    # print("\n\n\nGOTOV FPG ITEM BASED: " + str(datetime.datetime.now()))
 
     # print("\n\n\nPOCEO APRIORI: " + str(datetime.datetime.now()))
     # # Run apriori
     # rm.find_all_rules(df, first_form_index, algo='apriori')
     # print("\n\n\nGOTOV APRIORI: " + str(datetime.datetime.now()))
 
-    print("\n\n\nPOCEO APRIORI ITEM BASED: " + str(datetime.datetime.now()))
-    # Run apriori
-    rm.find_all_rules(df, first_form_index, algo='apriori_item_based')
-    print("\n\n\nGOTOV APRIORI ITEM BASED: " + str(datetime.datetime.now()))
+    # print("\n\n\nPOCEO APRIORI ITEM BASED: " + str(datetime.datetime.now()))
+    # # Run apriori
+    # rm.find_all_rules(df, first_form_index, algo='apriori_item_based')
+    # print("\n\n\nGOTOV APRIORI ITEM BASED: " + str(datetime.datetime.now()))
 
     # print("\n\n\nPOCEO RANDOM FOREST: " + str(datetime.datetime.now()))
     # # Run random forest
