@@ -14,6 +14,18 @@ import os
 import pickle
 import numpy as np
 
+from flask import Flask
+from flask import render_template
+
+
+app = Flask(__name__)
+
+
+@app.route('/')
+def hello():
+    message = "Hello"
+    return render_template('templates/index.html', message)
+
 def give_all_predictions(df, first_form_index, user_input):
     
     all_forms = df.columns[first_form_index:].tolist()
@@ -101,6 +113,8 @@ if __name__ == "__main__":
 
     df, first_form_index = run_data_preprocessing_pipeline()
 
+    app.run(debug=True)
+
     # ------------------------------------------------------------------------------------------------------------------
     # TRAIN MODELS AND GET RULES FUNCTIONS
 
@@ -156,3 +170,7 @@ if __name__ == "__main__":
     # ------------------------------------------------------------------------------------------------------------------
     # LIME EXPLANATION FUNCTION
     # move_me_pls(df, first_form_index, first_form_index, selected_cols)
+
+
+
+
