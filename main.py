@@ -1,4 +1,7 @@
 # imports
+from flask_cors import CORS
+from numpy import take
+
 import movie_recommendation as mr
 import recommendation_engine as re
 import insurance_recommendation as ir
@@ -14,22 +17,243 @@ import os
 import pickle
 import numpy as np
 
-from flask import Flask
+from flask import Flask, request
+import flask
 from flask import render_template
-
+import json
+import math
+from itertools import islice
+import requests
+import urllib.request
 
 app = Flask(__name__)
+cors = CORS(app)
+
+df_glob, first_form_index_glob = run_data_preprocessing_pipeline()
+
+forms_glob = []
 
 
-@app.route('/')
+@app.route("/")
 def hello():
+    message = "Hello, World"
+    return render_template('index.html', message=message)
+
+
+@app.route("/postforms", methods=['POST'])
+def get_forms():
+    data = request.get_json()
+    print(data['x'])
+
+    result_html = ""
+
+    dict_res = give_all_predictions(df_glob, first_form_index_glob, data['x'])
+    dict_res = {k: v for k, v in sorted(dict_res.items(), key=lambda item: item[1], reverse=True)}
+
+    list_keys = list(dict_res.keys())
+    global forms_glob
+    forms_glob = list_keys[:5]
+    n_items = []
     message = "Hello"
-    return render_template('templates/index.html', message)
+
+    return render_template('index.html', message=message)
+
+
+@app.route("/sendinfo", methods=['GET'])
+def send_info():
+
+    print(forms_glob)
+    print(flask.jsonify(forms_glob))
+
+    return flask.jsonify(list_of_data=forms_glob)
+
+@app.route("/getbusinesssegmet", methods=['GET'])
+def get_business_segment():
+    business_seg = []
+
+    file_name = 'data/BC - AI ORIGINAL.csv'
+    df = pd.read_csv(file_name, delimiter=',')
+
+    col_to_list = df['BusinessSegment'].tolist()
+
+    for val in col_to_list:
+        try:
+            if math.isnan(val):
+                print(val)
+                val = 'nan'
+                continue
+        except:
+            pass
+        if val not in business_seg:
+            business_seg.append(val)
+
+
+    print(business_seg)
+    print(flask.jsonify(business_seg))
+
+    return flask.jsonify(list_of_data=business_seg)
+
+
+@app.route("/gettype", methods=['GET'])
+def get_type():
+    type_l = []
+
+    file_name = 'data/BC - AI ORIGINAL.csv'
+    df = pd.read_csv(file_name, delimiter=',')
+
+    col_to_list = df['Type'].tolist()
+
+    for val in col_to_list:
+        try:
+            if math.isnan(val):
+                print(val)
+                val = 'nan'
+        except:
+            pass
+        if val not in type_l:
+            type_l.append(val)
+
+
+    print(type_l)
+    print(flask.jsonify(type_l))
+
+    return flask.jsonify(list_of_data=type_l)
+
+
+@app.route("/getinsuredstate", methods=['GET'])
+def get_insured_state():
+    ins_state = []
+
+    file_name = 'data/BC - AI ORIGINAL.csv'
+    df = pd.read_csv(file_name, delimiter=',')
+
+    col_to_list = df['InsuredState'].tolist()
+
+    for val in col_to_list:
+        try:
+            if math.isnan(val):
+                print(val)
+                val = 'nan'
+        except:
+            pass
+        if val not in ins_state:
+            ins_state.append(val)
+
+    print(ins_state)
+    print(flask.jsonify(ins_state))
+
+    return flask.jsonify(list_of_data=ins_state)
+
+
+@app.route("/getbrokercompany", methods=['GET'])
+def get_broker_company():
+    broker_c = []
+
+    file_name = 'data/BC - AI ORIGINAL.csv'
+    df = pd.read_csv(file_name, delimiter=',')
+
+    col_to_list = df['BrokerCompany'].tolist()
+
+    for val in col_to_list:
+        try:
+            if math.isnan(val):
+                print(val)
+                val = 'nan'
+        except:
+            pass
+        if val not in broker_c:
+            broker_c.append(val)
+
+
+    print(broker_c)
+    print(flask.jsonify(broker_c))
+
+    return flask.jsonify(list_of_data=broker_c)
+
+
+@app.route("/getbrokerstate", methods=['GET'])
+def get_broker_state():
+    broker_s = []
+
+    file_name = 'data/BC - AI ORIGINAL.csv'
+    df = pd.read_csv(file_name, delimiter=',')
+
+    col_to_list = df['BrokerState'].tolist()
+
+    for val in col_to_list:
+        try:
+            if math.isnan(val):
+                print(val)
+                val = 'nan'
+        except:
+            pass
+        if val not in broker_s:
+            broker_s.append(val)
+
+
+    print(broker_s)
+    print(flask.jsonify(broker_s))
+
+    return flask.jsonify(list_of_data=broker_s)
+
+
+@app.route("/getunderwriterteam", methods=['GET'])
+def get_underwriter_team():
+    underw_t = []
+
+    file_name = 'data/BC - AI ORIGINAL.csv'
+    df = pd.read_csv(file_name, delimiter=',')
+
+    col_to_list = df['UnderwriterTeam'].tolist()
+
+    for val in col_to_list:
+        try:
+            if math.isnan(val):
+                print(val)
+                val = 'nan'
+        except:
+            pass
+        if val not in underw_t:
+            underw_t.append(val)
+
+
+    print(underw_t)
+    print(flask.jsonify(underw_t))
+
+    return flask.jsonify(list_of_data=underw_t)
+
+
+@app.route("/getbusinessclassification", methods=['GET'])
+def get_business_classification():
+    bussines_class = []
+
+    file_name = 'data/BC - AI ORIGINAL.csv'
+    df = pd.read_csv(file_name, delimiter=',')
+
+    col_to_list = df['BusinessClassification'].tolist()
+
+    for val in col_to_list:
+        try:
+            if math.isnan(val):
+                print(val)
+                val = 'nan'
+        except:
+            pass
+        if val not in bussines_class:
+            bussines_class.append(val)
+
+
+    print(bussines_class)
+    print(flask.jsonify(bussines_class))
+
+    return flask.jsonify(list_of_data=bussines_class)
+
 
 def give_all_predictions(df, first_form_index, user_input):
     
     all_forms = df.columns[first_form_index:].tolist()
 
+    dict_res = {}
     for form in all_forms:
 
         print('\n\n\n===============')
@@ -53,11 +277,14 @@ def give_all_predictions(df, first_form_index, user_input):
         # FP Growth
         flag, fpg_conf = csr.checks_given_form(form, 'fpg', user_input)
         print(f'[FP GROWTH] = {fpg_conf}')
+        dict_res[form] = fpg_conf
 
         # Random forest prediction
         input_vec = csr._create_vector_for_random_forest(df.columns[:first_form_index].tolist(), user_input)
         rf_pred = csr.random_forest_predict(input_vec, form)
         print(f'[RANDOM FOREST] = {rf_pred}')
+
+    return dict_res
 
 
 def give_all_predictions_item_based(df, first_form_index, user_input):
@@ -158,7 +385,7 @@ if __name__ == "__main__":
     # bot = csr.Recommender_bot(df, first_form_index)
     # selected_cols = bot.console_user_input()
     # selected_cols = ['BusinessSegment_Naughton Motorsports', 'Type_New', 'InsuredState_LA', 'BrokerCompany_Socius Insurance Services, Inc.', 'BrokerState_MO', 'UnderwriterTeam_Brokerage Casualty - SouthEast', 'BusinessClassification_53374 Food Products Mfg. - dry', 'Occurrence: Owners & Contractors Protective', 'Limit Damage to Premises Rented to You', 'Each Common Cause Liquor Liability', 'Other', 'Terrorism']
-    # give_all_predictions(df, first_form_index, selected_cols)
+    # dict_res = give_all_predictions(df, first_form_index, selected_cols)
 
     # ------------------------------------------------------------------------------------------------------------------
     # ITEM BASED FUNCTIONS
