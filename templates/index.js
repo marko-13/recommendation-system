@@ -107,4 +107,30 @@ function submitForm(){
     selectFormFieldIds = Array.from(document.getElementById('formId')
                               .getElementsByTagName('select'))
                               .map(el => el.id)
+
+    // Select fields
+    for (let selectId in selectFormFieldIds){
+        let id = selectFormFieldIds[selectId]
+        selectField = document.getElementById(id)
+
+        formValues.push(selectFormFieldIds[selectId] + "_" + selectField.options[selectField.selectedIndex].value)
+    }
+
+    // console.log(formValues)
+
+    checkboxes = Array.from(document.getElementById('formId')
+                              .getElementsByTagName('input'))
+                              .map(el => el.id)
+
+    // Checkboxes:
+    for (let checkid in checkboxes){
+        let checkbox = document.getElementById(checkboxes[checkid])
+        if (checkbox.checked)
+            formValues.push(checkboxes[checkid])
+    }
+
+    console.log(formValues)
+
+    return formValues
+
 }
