@@ -110,32 +110,12 @@ $( document ).ready(function() {
                              .map(el => el.id)
 
 	console.log(selectFormFieldIds)
-	fetchSelectOptions(selectFormFieldIds)
+
 });
 
 
 
-function fetchSelectOptions(selectFields) {
 
-    for (let fieldName in selectFields){
-
-//        console.log(selectFields[fieldName])
-//        insertSelectOptions(selectFields[fieldName], ['opt1', 'opt2'])
-
-        // fetch('http://www.google.com')
-        //     .then(res => {
-        //         res.json()
-        //             .then(json => {
-
-        //             })
-        //             .catch(err => console.log(err))
-        //     })
-        //     .catch(err => {
-        //         insertSelectOptions("BusinessSegment", ['opt1', 'opt2', 'opt3'])
-        //     })
-    }
-
-}
 
 function insertSelectOptions(selectId, options){
 
@@ -235,7 +215,8 @@ function submitForm(){
 
     console.log(formValues)
 
-
+	$("#my_gif").show();
+	console.log('WRITE')
     $.ajax({
 		url: "/postforms",
 		type: "POST",
@@ -252,6 +233,7 @@ function submitForm(){
 			success: function(res) {
 				console.log(res);
 				forms_res = res.list_of_data
+				$("#my_gif").hide();
 			}
 		}).done(function(){
 			document.getElementById("list").innerHTML = "";

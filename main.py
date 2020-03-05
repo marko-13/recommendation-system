@@ -67,6 +67,7 @@ def send_info():
 
     return flask.jsonify(list_of_data=forms_glob)
 
+
 @app.route("/getbusinesssegmet", methods=['GET'])
 def get_business_segment():
     business_seg = []
